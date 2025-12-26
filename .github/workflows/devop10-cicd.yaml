@@ -1,0 +1,35 @@
+
+# condition: when to trigger the actions 
+on: 
+  push: 
+    branches: ["master"]
+env: 
+  IMAGE_NAME: reactjs-devop10
+
+jobs: 
+  build-push: 
+    runs-on: ubuntu-latest
+    environment: DOCKER_ENV
+    steps: 
+      - name: Clone code 
+        uses: actions/checkout@v3
+      - name: Use with SHA 
+        run: | 
+          echo "TAG=${GITHUB_SHA::8}" >> $GITHUB_ENV
+      - name: Show Tag value 
+        run: |
+          echo "Tag is : ${{ env.TAG }}"
+      - name: Login to Dockerhub 
+        run: |
+          echo "${{ secrets.PASSWORD }}" | docker login -u ${{ secrets.USERNAME }} --password-stdin 
+      - name: Build docker images 
+        run: 
+          docker build -t ${{ secrets.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} .
+
+      - name: Push to dockerhub 
+        run: |
+          docker push ${{ secrets.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+      - name: Logout from Dockerhub 
+        if: always()
+        run: |
+          docker logout
