@@ -33,3 +33,27 @@ jobs:
         if: always()
         run: |
           docker logout
+  deploy_gcp: 
+    needs: build-push
+    runs-on: ubuntu-latest
+    environment: GCP_ENV
+    steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v3
+      - name: Use with SHA 
+        run: | 
+          echo "TAG=${GITHUB_SHA::8}" >> $GITHUB_ENV
+      - name: Deploy via SSH 
+        use: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.IP}}
+          username: ${{ secrets.GCP_USER}}
+          key: ${{ secrets.PRIVATE_KEY}}
+          envs: TAG
+          script: |
+            docker stop my-app || true
+            docker rm my-app || true
+            docker run -dp 800:8000 \ 
+              --name my-app \
+              "ahliv/${{env.IMAGE_NAME}}:${{env.TAG}}"
+
