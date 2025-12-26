@@ -53,7 +53,7 @@ jobs:
           script: |
             docker stop my-app || true
             docker rm my-app || true
-            docker run -dp 800:8000 \ 
+            docker run -dp 8000:8000 \ 
               --name my-app \
               "ahliv/${{env.IMAGE_NAME}}:${{env.TAG}}"
 
