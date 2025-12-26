@@ -55,5 +55,5 @@ jobs:
             docker rm my-app || true
             docker run -dp 8000:8000 \ 
               --name my-app \
-              "ahliv/${{env.IMAGE_NAME}}:${{env.TAG}}"
+              "seangliliv12/${{env.IMAGE_NAME}}:${{env.TAG}}"
 
