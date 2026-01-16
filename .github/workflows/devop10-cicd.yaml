@@ -2,7 +2,7 @@
 # condition: when to trigger the actions 
 on: 
   push: 
-    branches: ["master123"]
+    branches: ["master1234"]
 env: 
   IMAGE_NAME: reactjs-devop10
 
